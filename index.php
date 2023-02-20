@@ -22,10 +22,39 @@
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             </h1>
             <body>
-                <form action="download.php" method="post">
-                     <input type="submit" name="submit" value="Download File" />
-                </form>
-                <form method="post" action="workflow.php" enctype="multipart/form-data">
+                <?php
+                $db_host = "localhost";
+                $db_user = "root";
+                $db_password = "Hello";
+                $db_name = "test1";
+                        
+                // Connect to the database
+                $conn = mysqli_connect($db_host, $db_user,$db_password, $db_name);
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                // Retrieve data from table
+                $listforms = "SELECT id, type FROM forms";
+                $results = $conn->query($listforms);
+
+                if ($results->num_rows > 0) {
+                    //output data table
+                    echo "<table><tr><th>Form ID</th><th>FormType</th><th>Download</th></tr>";
+                    while($rows = $results->fetch_assoc()){
+                        echo "<tr><td>" . $rows['id'] . "</td>";
+                        echo "<td>" . $rows["type"] . "</td>";
+                        echo "<td><a href='download.php?id=" . $rows['id'] . "'>Download</a></td></tr>";
+                    }
+                    echo "</table>";
+                } else {
+                    echo "No forms found!";
+                }
+
+
+                ?>
+                
+                <form method="post" action="upload.php" enctype="multipart/form-data">
                     <label>Select PDF File:</label>
                     <input type="file" name="pdf_file" required>
                     <br>
@@ -35,8 +64,25 @@
                     <label>Email:</label>
                     <input type="email" name="email" required>
                     <br>
-                    <label>Form Type:</label>
-                    <input type="text" name="form_type" required>
+                    <label for="Form Type" >Choose a form type:</label>
+                    <select id="Form Type" name="form_type" required>
+                    <?php
+                        
+                            // Query the database for form types
+                            $sql = "SELECT DISTINCT type FROM forms";
+                            $result = $conn->query($sql);
+
+                            // If query is successful and rows are returned, populate the select element with options
+                            if ($result && $result->num_rows > 0) {
+                                while($row = $result->fetch_assoc()) {
+                                echo "<option value='" . $row["type"] . "'>" . $row["type"] . "</option>";
+                                }
+                            } 
+
+                            // Close database connection
+                            $conn->close();
+                        ?>
+                    </select>
                     <br>
                     <label>Date:</label>
                     <input type="text" name="date_submitted" required>
@@ -47,7 +93,7 @@
             </body>
         </div>
     </body>
-    
+  
     
 </html>
 

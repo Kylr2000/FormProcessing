@@ -1,76 +1,46 @@
 <?php
-// Connection details for the database
-$db_host = "localhost";
-$db_user = "root";
-$db_password = "Hello";
-$db_name = "test1";
 
 // Connect to the database
-$db = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+$servername = "localhost";
+$username = "root";
+$password = "Hello";
+$dbname = "test1";
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check the connection
-if (!$db) {
-    die("Connection failed: " . mysqli_connect_error());
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Retrieve the student's email address
-$student_email = $_POST['email'];
+// Get the workflow definition for the form
+$form_type = $_POST["form_type"];
+$sql = "SELECT metadata FROM forms WHERE type = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $form_type);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$workflow = $row["metadata"];
 
-// Query to retrieve the staff user information
-$query = "SELECT * FROM staff_members WHERE student_email = '$student_email'";
+// Convert the workflow definition from JSON to an array
+$workflow_array = json_decode($workflow, true);
 
-// Execute the query
-$result = mysqli_query($db, $query);
+// Get the first name from the workflow definition array
+$first_name = $workflow_array[0];
 
-// Check if a staff user was found
-if (mysqli_num_rows($result) > 0) {
-    // Retrieve the staff user information
-    $row = mysqli_fetch_assoc($result);
-    $staff_email = $row['email'];
-    $staff_name = $row['name'];
+// Send the PDF form and email notification to the staff user
+// Get the PDF form from the forms table
 
-    // Form the email headers
-    $to = $staff_email;
-    $subject = "Advisory Form";
-    $message = "Dear $staff_name,\n\nPlease find attached the Advisory Form for a student.\n\nBest regards,\nAdvisory Team";
-    $headers = "From: Advisory Team <kyle.jaimungal@gmail.com>" . "\r\n" .
-               "Reply-To: Advisory Team <kyle.jaimungal@gmail.com>" . "\r\n" .
-               "MIME-Version: 1.0" . "\r\n" .
-               "Content-Type: text/plain; charset=UTF-8" . "\r\n" .
-               "X-Mailer: PHP/" . phpversion();
 
-    // Attach the form to the email
-    $pdf = $_FILES['pdf_file'];
-    $pdf_content = file_get_contents($pdf['tmp_name']);
-    $pdf_encoded = chunk_split(base64_encode($pdf_content));
+// Email the PDF form to the staff user
+$to = "$first_name@gmail.com";
+$subject = "New Form Submission";
+$message = "A new form has been submitted for your review. Please find the attached form.";
+$headers = "From: kyle.jaimungal@gmail.com\r\n";
+mail($to, $subject, $message, $headers);
 
-    // Form the email body
-    $body = "--PHP-mixed-".uniqid()."\r\n" .
-            "Content-Type: text/plain; charset=UTF-8\r\n" .
-            "Content-Transfer-Encoding: 7bit\r\n\r\n" .
-            $message . "\r\n\r\n" .
-            "--PHP-mixed-".uniqid()."\r\n" .
-            "Content-Type: application/pdf; name=\"form.pdf\"\r\n" .
-            "Content-Transfer-Encoding: base64\r\n" .
-            "Content-Disposition: attachment\r\n\r\n" .
-            $pdf_encoded . "\r\n" . "--";
-        
-                // Send the email
-    if (mail($to, $subject, $body, $headers)) {
-        // Email was sent successfully
-        echo "Advisory form sent to $staff_name ($staff_email) successfully.";
-    } else {
-        // Email sending failed
-        echo "Error sending the advisory form to $staff_name ($staff_email). Please try again later.";
-    }
-}  
+// Close the statement and connection
+$stmt->close();
+$conn->close();
 
-else {
-    // No staff user was found with the specified email address
-    echo "No staff user was found with the email address '$student_email'.";
-}
-
-// Close the database connection
-mysqli_close($db);
 ?>
-
