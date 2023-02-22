@@ -8,8 +8,8 @@
    $db = mysqli_connect($db_host, $db_user,$db_password, $db_name);
 
    // Get the submission ID from the query string
-   $form_id = $_GET['id'];
-   $query = "SELECT file FROM forms WHERE id = '$form_id'";
+   $form_type = $_GET['type'];
+   $query = "SELECT file FROM forms WHERE type = '$form_type'";
    $result = mysqli_query($db, $query);
    if (mysqli_num_rows($result) > 0) {
    $row = mysqli_fetch_assoc($result);

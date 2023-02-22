@@ -35,16 +35,15 @@
                 }
 
                 // Retrieve data from table
-                $listforms = "SELECT id, type FROM forms";
+                $listforms = "SELECT type FROM forms";
                 $results = $conn->query($listforms);
 
                 if ($results->num_rows > 0) {
                     //output data table
-                    echo "<table><tr><th>Form ID</th><th>FormType</th><th>Download</th></tr>";
+                    echo "<table><tr><th>FormType</th><th>Download</th></tr>";
                     while($rows = $results->fetch_assoc()){
-                        echo "<tr><td>" . $rows['id'] . "</td>";
                         echo "<td>" . $rows["type"] . "</td>";
-                        echo "<td><a href='download.php?id=" . $rows['id'] . "'>Download</a></td></tr>";
+                        echo "<td><a href='download.php?type=" . $rows['type'] . "'>Download</a></td></tr>";
                     }
                     echo "</table>";
                 } else {
