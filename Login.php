@@ -1,66 +1,93 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Form Processing</title>
-        
-    </head>
-    <body> 
-        <nav>
-            <div>
+<?php
+// Start session
+session_start();
 
-            </div>
-                <ul>
-                    <li><a href="index.php"> Home</a></li>
-                    <li><a href="About.php"> About</a></li>
-                    <li><a href="Login.php"> Login</a></li>
-                </ul>
-        </nav>
-        <h1>
-            Login Page
-        </h1>
+
+
+// Database connection file
+require_once "db.php";
+// Get a new database connection object
+$conn = get_db_connection();
+
+if(isset($_POST['username']) && isset($_POST['password'])) {
+        function validate($data){
+            $data = trim($data);
+    
+            $data = stripslashes($data);
+    
+            $data = htmlspecialchars($data);
+    
+            return $data;
+    
+        }
+
+
+    $user_name = validate($_POST['username']);
+    $password = validate($_POST['password']);
+
+    if (empty($user_name)) {
+
+        header("Location: index.php?error=User Name is required");
+
+        exit();
+
+    }else if(empty($password)){
+
+        header("Location: index.php?error=Password is required");
+
+        exit();
+
+    }
+
+    else{
+            // Compare username and password with what is in the database
+            $sql = "SELECT * FROM users WHERE username = '$user_name' and password = '$password'";
+            $result = mysqli_query($conn, $sql);
+
+
+            if(mysqli_num_rows($result) === 1){
+            $row = mysqli_fetch_assoc($result);
+            if($row['username'] === $user_name && $row['password'] === $password){
+                
+                $_SESSION['username'] = $row['username'];
+                $_SESSION['name'] = $row['name'];
+                $_SESSION['id'] = $row['id'];
+                $_SESSION['type'] = $row['type'];
+                // Redirect user to their dashboard
+                $user_type = $row['type'];
+                if($user_type == "admin") {
+                    header("Location: Admin.php");
+                    exit();
+                } else if($user_type == "staff") {
+                    header("Location: Staff.php");
+                    exit();
+                }
+
+            }
+            else{
+                header("Location: index.php?error=Incorect User name or password");
+
+                exit();
+                
+            }
+        }
+    }
+}
+
+else {
+    header("Location: index.php");
+
+    exit();
+}
+                    
+                
+         
         
-    </body>
     
     
-</html>
+    // Close connection
+    $conn->close();
 
-<style type="text/css">
-* {
-    margin: 0;
-    padding: 0;
-}
+?>
 
-body{
-    background-color: #eee;
-}
 
-nav {
-    width: 100%;
-    height: 100px;
-    background-color: #fff;
-}
-
-ul {
-    margin-left: 100px;
-}
-
-ul li {
-    list-style: none;
-    display: inline-block;
-    float: left;
-    line-height: 100px;
-}
-
-ul li a {
-    text-decoration: none;
-    font-size: 14px;
-    font-family: Arial;
-    color: #1e1e1e;
-    padding: 0 20px;
-
-}
-
-ul li a:hover {
-    color: red;
-}

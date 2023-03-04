@@ -12,7 +12,7 @@
                     <li><img class="img-logo" src="UWI-Logo.jpg" alt="UWI Logo"></li>
                     <li><a href="index.php"> Home</a></li>
                     <li><a href="About.php"> About</a></li>
-                    <li><a href="Login.php"> Login</a></li>
+                    <li><a href="login_form.php"> Login</a></li>
                 </ul>
             </div>
         </nav>
@@ -53,7 +53,7 @@
 
                 ?>
                 
-                <form method="post" action="upload.php" enctype="multipart/form-data">
+                <form method="post" action="workflow3.php" enctype="multipart/form-data">
                     <label>Select PDF File:</label>
                     <input type="file" name="pdf_file" required>
                     <br>

@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Staff Dashboard</title>
+    <title>Admin Dashboard</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
     <div class="container">
         <nav>
             <div class="nav-left">
-                <a href="#">Welcome, Staff User</a>
+                <a href="#">Welcome, Admin User</a>
             </div>
             <div class="nav-right">
                 <a href="logout.php">Logout</a>
             </div>
         </nav>
         <div class="main-content">
-            <h1>Staff Dashboard</h1>
+            <h1>Admin Dashboard</h1>
             <div class="options">
                 <a href="all_forms.php">All Forms</a>
                 <a href="incoming_forms.php">Incoming Forms</a>
                 <a href="approved_forms.php">Approved Forms</a>
+                <a href="create_forms.php">Create Forms</a>
             </div>
         </div>
     </div>
