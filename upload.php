@@ -47,4 +47,3 @@ mysqli_close($db);
 
 
 
-?>

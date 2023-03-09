@@ -50,8 +50,7 @@ if(isset($_POST['username']) && isset($_POST['password'])) {
             if($row['username'] === $user_name && $row['password'] === $password){
                 
                 $_SESSION['username'] = $row['username'];
-                $_SESSION['name'] = $row['name'];
-                $_SESSION['id'] = $row['id'];
+                $_SESSION['id'] = $row['userid'];
                 $_SESSION['type'] = $row['type'];
                 // Redirect user to their dashboard
                 $user_type = $row['type'];
