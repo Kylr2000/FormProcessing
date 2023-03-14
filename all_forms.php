@@ -37,7 +37,7 @@
                 echo "<td>" . $row['student_id'] . "</td>";
                 echo "<td>" . $row['email_address'] . "</td>";
                 echo "<td>" . $row['date_submitted'] . "</td>";
-                echo "<td><a href='view_form.php?id=" . $row['submission_id'] . "'>View</a> | <a href='download_form.php?id=" . $row['submission_id'] . "'>Download</a></td>";
+                echo "<td><a href='view_form.php?id=" . $row['submission_id'] . "'>View</a> | <a href='download_form.php?id=" . $row['submission_id'] . "'>Download</a> | <a href='approve_form.php?id=" . $row['submission_id'] . "'>Approve</a> | <a href='reject_form.php?id=" . $row['submission_id'] . "'>Reject</a> </td>";
                 echo "</tr>";
             }
         ?>

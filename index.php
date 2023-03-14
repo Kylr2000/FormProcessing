@@ -53,7 +53,7 @@
 
                 ?>
                 
-                <form method="post" action="workflow3.php" enctype="multipart/form-data">
+                <form method="post" action="workflow.php" enctype="multipart/form-data">
                     <label>Select PDF File:</label>
                     <input type="file" name="pdf_file" required>
                     <br>
