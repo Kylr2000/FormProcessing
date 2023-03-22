@@ -56,11 +56,16 @@ if(isset($_POST['username']) && isset($_POST['password'])) {
                 $user_type = $row['type'];
                 if($user_type == "admin") {
                     header("Location: Admin.php");
+                    $query = "UPDATE users SET last_login_time = NOW() WHERE username = '$user_name'";
+                    $result = mysqli_query($conn, $query);
                     exit();
                 } else if($user_type == "staff") {
                     header("Location: Staff.php");
+                    $query = "UPDATE users SET last_login_time = NOW() WHERE username = '$user_name'";
+                    $result = mysqli_query($conn, $query);
                     exit();
                 }
+           
 
             }
             else{

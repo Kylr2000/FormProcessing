@@ -36,7 +36,7 @@
         $result = mysqli_query($conn, $sql);
     ?>
    
-    <div class="container">
+    <div class="wrapper">
     <h1>All Forms</h1>
     <p>Click on the "View" button to view the form. Click on the "Download" button to download the form. Click on the "Approve" button to approve the form. Click on the "Reject" button to reject the form.</p>
     <body>

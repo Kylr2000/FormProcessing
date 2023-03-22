@@ -14,7 +14,6 @@
             <ul>
                 <li><a href="#">Welcome, Staff User</a></li>
                 <li><a href="Admin.php"> Home</a></li>
-                <li><a href="allforms_admin.php">All Forms</a></li>
                 <li><a href="Approveforms_admin.php">Approved Forms</a></li>
                 <li><a href="create_forms.php">Create Forms</a></li>
                 <li><a href="create_user.php">Create New User</a></li>
@@ -28,36 +27,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     </h1>
 
-            <?php
-            include "db.php";            
-            // Connect to database
-            $conn = get_db_connection();
-
-            // Query to get staff users who haven't logged in for 7 days
-            $sql = "SELECT * FROM users WHERE type = 'staff' AND last_login_time < DATE_SUB(NOW(), INTERVAL 1 HOUR)";
-            $result = mysqli_query($conn, $sql);
-
-            // put the result set into an array
-            $users = array();
-            while ($row = mysqli_fetch_assoc($result)) {
-                $users[] = $row['username'];
-            }
-            // Send notification to admin user dashboard
-            if (!empty($users)) {
-            $message = count($users) . " staff user(s) haven't logged in for 7 days.";
-            //convert array to JSON
-            $usernames = json_encode($users);
-            $date_submitted = date('Y-m-d H:i:s');
-            // Insert notification into the database
-            $stmt = $conn->prepare("INSERT INTO admin_inbox (username, message, created_at) VALUES (?, ?, ?)");
-            $stmt->bind_param('sss', $usernames, $message, $date_submitted);
-            $stmt->execute();
-            $stmt->close();
-            }
-        ?>
-
-
     <?php
+        include "db.php";
+
+        // Connect to the database
+        $conn = get_db_connection();
 
         // Check for errors
         if (!$conn) {
@@ -65,20 +39,21 @@
         }
 
         // Select all rows from the form_submissions table
-        $sql = "SELECT * FROM admin_inbox";
+        $sql = "SELECT * FROM form_submissions";
         $result = mysqli_query($conn, $sql);
     ?>
 
 
-    <h2>My Inbox</h2>
-    <p> This is the admin inbox. You recieve notices from the system here if a user has not been active. You can clear a notice once it has been resolved by clicking the "Clear" button.</p>
+    <h2>All Forms</h2>
+    <p>Click on the "View" button to view the form. Click on the "Download" button to download the form. Click on the "Approve" button to approve the form. Click on the "Reject" button to reject the form.</p>
     <body>
     <table class="table table-bordered">
         <thead>
             <tr>
                 
-                <th>Usernames</th>
-                <th>Message</th>
+                <th>Form Type</th>
+                <th>Student ID</th>
+                <th>Email</th>
                 <th>Date Submitted</th>
                 <th>Actions</th>
             </tr>
@@ -87,11 +62,19 @@
             <?php while ($row = mysqli_fetch_assoc($result)): ?>
                 <tr>
                     
-                    <td><?= $row['username'] ?></td>
-                    <td><?= $row['message'] ?></td>
-                    <td><?= $row['created_at'] ?></td>
+                    <td><?= $row['form_type'] ?></td>
+                    <td><?= $row['student_id'] ?></td>
+                    <td><?= $row['email_address'] ?></td>
+                    <td><?= $row['date_submitted'] ?></td>
                     <td>
-                        <a href='Clear.php?created_at=<?= $row['created_at'] ?>' class="btn btn-primary" role="button">Clear</a>
+                        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#view-form-<?= $row['submission_id'] ?>">View</button>
+                        <div id="view-form-<?= $row['submission_id'] ?>" class="collapse">
+                            <!-- Include code for displaying the form -->
+                            <iframe src="view_form.php?id=<?= $row['submission_id'] ?>" style="width: 100%; height: 500px;"></iframe>
+                        </div>
+                        <a href='download_form.php?id=<?= $row['submission_id'] ?>' class="btn btn-primary" role="button">Download</a>
+                        <a href='approve.php?id=<?= $row['submission_id'] ?>' class="btn btn-primary" role="button">Approve</a>
+                        <a href='remove_allforms.php?id=<?= $row['submission_id'] ?>' class="btn btn-primary" role="button">Remove</a>
                     </td>
                 </tr>
             <?php endwhile ?>

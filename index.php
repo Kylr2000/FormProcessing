@@ -68,6 +68,7 @@
         <br>
         <label ​class="control-label col-sm-2" for="Form Type" >Choose a form type:</label>
         <select class="form-control" id="Form Type" name="form_type" required>
+            <option value="">Select form type</option>
             <?php
 
             // Query the database for form types

@@ -11,16 +11,17 @@
     <nav>
         <div class="wrapper">
             <ul>
-                    <li><a href="#">Welcome, Staff User</a></li>
-                    <li><a href="all_forms.php">All Forms</a></li>
-                    <li><a href="approved_forms.php">Approved Forms</a></li>
-                    <li><a href="logout.php">Logout</a></li>
-            </ul>
+                <li><a href="#">Welcome, Staff User</a></li>
+                <li><a href="Admin.php"> Home</a></li>
+                <li><a href="Approveforms_admin.php">Approved Forms</a></li>
+                <li><a href="create_forms.php">Create Forms</a></li>
+                <li><a href="create_user.php">Create New User</a></li>
+                <li><a href="logout.php">Logout</a></li>
         </div>
     </nav>
     <div class="wrapper">
     <h1>
-        Staff Dashboard
+        Admin Dashboard
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     </h1>
 
@@ -42,7 +43,7 @@
         ?>
 
         <h2>Approved Forms</h2>
-        <p>Click on the "View" button to view the form. Click on the "Download" button to download the form. Click on the "Approve" button to approve the form. Click on the "Reject" button to reject the form.</p>
+        <p>Click on the "View" button to view the form. Click on the "Download" button to download the form. Click on the "Remove" button to remove the form from the system.</p>
         <!-- Display the forms in a table -->
         <table class="table table-bordered">
         <thead>
@@ -70,7 +71,7 @@
                             <iframe src="view_approve.php?id=<?= $row['submission_id'] ?>" style="width: 200%; height: 500px;"></iframe>
                         </div>
                         <a href='download_approve.php?id=<?= $row['submission_id'] ?>' class="btn btn-primary" role="button">Download</a>
-                        <a href='remove.php?id=<?= $row['submission_id'] ?>' class="btn btn-primary" role="button">Remove</a>
+                        <a href='remove_form.php?id=<?= $row['submission_id'] ?>' class="btn btn-primary" role="button">Remove</a>
                     </td>
                 </tr>
             <?php endwhile ?>

@@ -131,19 +131,38 @@
     send_email($to_email, $subject, $message);
     }
 
-    if (count($workflow_approvals_true) === count($workflow_array)) {
-        // Add the form to the completed_workflow archive lookup table
-        add_form_submission_to_completed_workflow($form_submission_id);
+    // Check if the form has been approved by all the next_persons in the workflow
+    if (is_array($workflow_approvals)) {
+        if (count($workflow_approvals_true) === count($workflow_array)) {
+            // Add the form to the completed_workflow archive lookup table
+            add_form_submission_to_completed_workflow($form_submission_id);
+            
+            // Send an email notification to the student that the form has been approved
+            $to_email = $student_email;
+            $subject = 'Form submission approved';
+            $message = 'Your form submission has been approved. Thank you for submitting the form.';
+            send_email($to_email, $subject, $message);
+            
+            // Update the form_submission status to 'approved'
+            update_form_submission_status($form_submission_id, 'Approved');
+        }
+    } else {
+            // If $workflow_approvals is a string, add form to the completed_workflow archive lookup table
+            if (is_string($workflow_approvals)) {
+                add_form_submission_to_completed_workflow($form_submission_id);
+                //Send an email notification to the student that the form has been approved
+                $to_email = $student_email;
+                $subject = 'Form submission approved';
+                $message = 'Your form submission has been approved. Thank you for submitting the form.';
+                send_email($to_email, $subject, $message);
+                // Update the form_submission status to 'approved'
+                update_form_submission_status($form_submission_id, 'Approved');
+                echo "Form $form_submission_id has been approved by all next_persons in the workflow.";
+            }
+        }
+
         
-        // Send an email notification to the student that the form has been approved
-        $to_email = $student_email;
-        $subject = 'Form submission approved';
-        $message = 'Your form submission has been approved. Thank you for submitting the form.';
-        send_email($to_email, $subject, $message);
-        
-        // Update the form_submission status to 'approved'
-        update_form_submission_status($form_submission_id, 'Approved');
-    }
+    
 
    
 
